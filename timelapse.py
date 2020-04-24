@@ -1,26 +1,32 @@
 #!/bin/python3
 import os
-import argparse
 from requests import exceptions
 from tempfile import mkdtemp
 from time import sleep
 from urllib.request import urlopen
 from um3api import Ultimaker3
+import shutil
 
-cliParser = argparse.ArgumentParser(description=
-			'Creates a time lapse video from the onboard camera on your Ultimaker 3.')
-cliParser.add_argument('HOST', type=str,
-			help='IP address of the Ultimaker 3')
-cliParser.add_argument('DELAY', type=float,
-			help='Time between snapshots in seconds')
-cliParser.add_argument('OUTFILE', type=str,
-			help='Name of the video file to create. Recommended formats are .mkv or .mp4.')
-options = cliParser.parse_args()
+# # check to see if ffmpeg is installed before print starts, this is quite annoying otherwise
+# print("Checking ffmpeg is installed")
+# try:
+# 	shutil.which(ffmpeg)
+# if return == "None"
+# 	print("Please install ffmpeg from 'https://ffmpeg.org/' and then run again.")
+# 	exit()
 
-imgurl = "http://" + options.HOST + ":8080/?action=snapshot"
+# HOST = input("UM3 IP address: ")
+# DELAY = input("Set delay (s)")
+# DELAY = int(DELAY)
+DELAY = int(30)
 
-api = Ultimaker3(options.HOST, "Timelapse")
-#api.loadAuth("auth.data")
+# allow user to specify the format as binary choice?
+# OUTFILE = input("Save file as <filename>.mp4/.mkv: ")
+OUTFILE = "test.mp4"
+
+imgurl = "http://" + HOST + ":8080/?action=snapshot"
+
+api = Ultimaker3(HOST, "Timelapse")
 
 def printing():
 	status = None
@@ -28,10 +34,13 @@ def printing():
 	while status == None:
 		try:
 			status = api.get("api/v1/printer/status").json()
+
 			if status == 'printing':
 				state = api.get("api/v1/print_job/state").json()
+
 				if state == 'wait_cleanup':
 					return False
+
 				else:
 					return True
 			else:
@@ -55,6 +64,12 @@ def print_error(err):
 	print("Retrying")
 	print()
 	sleep(1)
+	clear_temp()
+
+def clear_temp():
+	# delete temp files
+	print(":: Cleaning up temp files in ",tmpdir)
+	shutil.rmtree(tmpdir)
 
 tmpdir = mkdtemp()
 filenameformat = os.path.join(tmpdir, "%05d.jpg")
@@ -66,6 +81,21 @@ if not os.path.exists(tmpdir):
 print(":: Waiting for print to start")
 while not printing():
 	sleep(1)
+
+# printer should only print when state is 'printing'
+
+# if state == 'pre-print':
+#
+# if state == 'post-print':
+#
+# if state == 'wait_user_action':
+
+# it should do nothing
+
+
+
+
+
 print(":: Printing")
 
 count = 0
@@ -76,13 +106,33 @@ while printing():
 	filename = filenameformat % count
 	f = open(filename,'bw')
 	f.write(response.read())
-	f.close
+	f.close()
 	print("Print progress: %s Image: %05i" % (progress(), count), end='\r')
-	sleep(options.DELAY)
+	sleep(DELAY)
 
+
+
+
+
+# add a few extra frames to the end:
 print()
-print(":: Print completed")
+print(":: Print completed. Taking extra frames...")
+extra_frames = 0
+while extra_frames < 4:
+	sleep(DELAY)
+	count += 1
+	response = urlopen(imgurl)
+	filename = filenameformat % count
+	f = open(filename,'bw')
+	f.write(response.read())
+	f.close()
+	# print("extra frame " + str(extra_frames))
+	extra_frames +=1
+	sleep(3)
+
 print(":: Encoding video")
-ffmpegcmd = "ffmpeg -r 30 -i " + filenameformat + " -vcodec libx264 -preset veryslow -crf 18 " + options.OUTFILE
+ffmpegcmd = "ffmpeg -r 30 -i " + filenameformat + " -vcodec libx264 -preset veryslow -crf 18 " + OUTFILE + " -y" # uncomment -y flag to disable automatic outfile overwrite
 print(ffmpegcmd)
 os.system(ffmpegcmd)
+clear_temp()
+
