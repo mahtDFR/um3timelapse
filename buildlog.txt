@@ -1,0 +1,37 @@
+unlimited bacon made this script in the um community years ago and after using it id like to make some improvements:
+
+so far:
+
+changed args to input prompts
+add routine to take 3 extra frames to end of footage
+
+to do:
+
+add check for ffmpeg installation
+delete temp files on completion or error
+stop taking frames during heat up process
+check if compatible with python 3.8
+
+
+
+
+
+
+
+getting this when trying to delete temp files:
+
+PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\MD44A~1.JAN\\AppData\\Local\\Temp\\tmp8dzurcpe\\00023.jpg'
+
+
+
+ffmpeg -r 30 -i -y -vcodec libx264 -preset veryslow -crf 18 test.mp4
+
+
+response body during print
+"pre_print" api state is when heating. should find a way to say not to do anything while this is happening
+
+"printing" is when printing (duh)
+
+"post_print"
+
+"wait_user_action" (print aborted would you like to retry)
