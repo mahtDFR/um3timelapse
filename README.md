@@ -18,6 +18,6 @@ Video is encoded using H.264 at 30 fps, but you can easily change this by editin
 To do
 ------
 
-- Only take shots when state == "printing" and not during "pre_print"
+- Only take shots when state == "printing" and not == "pre_print"
 - Take postroll shots when state == "post_print"
 - Add check for ffmpeg at start
