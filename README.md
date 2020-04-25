@@ -26,3 +26,4 @@ To do
 - Only take shots when state == "printing" and not == "pre_print"
 - Take postroll shots when state == "post_print"
 - Add check for ffmpeg at start
+- Take frames on Z moves only?
