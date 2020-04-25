@@ -21,8 +21,3 @@ To do
 - Only take shots when state == "printing" and not during "pre_print"
 - Take postroll shots when state == "post_print"
 - Add check for ffmpeg at start
-
-Thanks
-------
-
-[Ultimaker 3 API library](https://ultimaker.com/en/community/23329-inside-the-ultimaker-3-day-3-remote-access-part-2) by Daid
