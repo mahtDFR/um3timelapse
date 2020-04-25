@@ -7,15 +7,14 @@ from urllib.request import urlopen
 from um3api import Ultimaker3
 import shutil
 
+HOST = input("UM3 IP address: ")
+# HOST = "" # UM3 IP goes here
 
-# HOST = input("UM3 IP address: ")
-HOST = "" # UM3 IP goes here
+DELAY = int(input("Set delay (s)"))
+# DELAY = int(5)
 
-# DELAY = input("Set delay (s)")
-DELAY = int(5)
-
-# OUTFILE = input("Save file as <filename>.mp4/.mkv: ")
-OUTFILE = "test.mp4"
+OUTFILE = input("Save file as <filename>.mp4/.mkv: ")
+# OUTFILE = "test.mp4"
 
 imgurl = "http://" + HOST + ":8080/?action=snapshot"
 
@@ -75,9 +74,7 @@ print("Waiting for print to start")
 while not printing():
 	sleep(1)
 
-
 print("Printing")
-
 count = 0
 
 while printing():
@@ -89,10 +86,9 @@ while printing():
 	f.close()
 	print("Print progress: %s Image: %05i" % (progress(), count), end='\r')
 	sleep(DELAY)
+	print()
 
-# add a few extra frames to the end:
-print()
-print("Print completed. Taking extra frames...")
+print("Print completed.")
 extra_frames = 0
 
 while extra_frames < 4:
@@ -103,7 +99,6 @@ while extra_frames < 4:
 	f = open(filename,'bw')
 	f.write(response.read())
 	f.close()
-	# print("extra frame " + str(extra_frames))
 	extra_frames +=1
 	sleep(3)
 
@@ -112,4 +107,3 @@ ffmpegcmd = "ffmpeg -r 30 -i " + filenameformat + " -vcodec libx264 -preset very
 print(ffmpegcmd)
 os.system(ffmpegcmd)
 clear_temp()
-
