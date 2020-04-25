@@ -1,4 +1,4 @@
-Ultimaker 3 Timelapse Maker
+Ultimaker 3 timelapse maker
 ===========================
 
 A script that makes timelapse videos from the onboard camera on your Ultimaker 3.
