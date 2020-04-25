@@ -1,7 +1,7 @@
 from um3api import Ultimaker3
 import time
 
-HOST = "192.168.10.124" # UM3 IP goes here
+HOST = "" # UM3 IP goes here
 
 api = Ultimaker3(HOST, "statecheck")
 
