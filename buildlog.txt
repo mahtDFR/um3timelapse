@@ -1,37 +1,53 @@
-unlimited bacon made this script in the um community years ago and after using it id like to make some improvements:
+24/04/2020
+
+unlimitedbacon made this script in the um community years ago and after using it a while back id like to make some improvements to get my head around the api a bit.
 
 so far:
 
-changed args to input prompts
-add routine to take 3 extra frames to end of footage
+changed args to input prompts to make it slightly more beginner-friendly
+add routine to take 3 extra frames to end of footage (some tweaking required)
+delete temp files on completion or error
+check if compatible with python 3.8
 
 to do:
 
-add check for ffmpeg installation
-delete temp files on completion or error
-stop taking frames during heat up process
-check if compatible with python 3.8
+stop taking frames during 'pre-print' state
+only take post roll during 'post-print' state
+add check for ffmpeg installation to prevent encoding failures at last hurdle
 
 
-
-
-
-
-
-getting this when trying to delete temp files:
-
+getting this when trying to delete temp files: [solved]
 PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\MD44A~1.JAN\\AppData\\Local\\Temp\\tmp8dzurcpe\\00023.jpg'
+this is because the call to close the final file had a syntax error (no brackets)
+
+added -y flag to ffmpeg command to auto overwrite my 'test.mp4' file without prompting
+
+insight into printer states (while status is 'printing')
+
+response body:
+"pre_print" when heating. should find a way to say not to do anything while this is happening
+
+"printing" when printing (duh)
+
+"post_print" during cooldown phase
+
+"wait_user_action" when print removed and "Print aborted. Would you like to retry?" is displayed
+
+"wait_cleanup" when user prompted to remove print
 
 
+25/04/2020
 
-ffmpeg -r 30 -i -y -vcodec libx264 -preset veryslow -crf 18 test.mp4
+stop taking frames during 'pre-print' state
+only take post roll during 'post-print' state
+add check for ffmpeg installation to prevent encoding failures at last hurdle if user didnt RTFM
 
+getting the state is throwing up some issues
+while loops dont seem to work as intended so probably need to do something more complex
 
-response body during print
-"pre_print" api state is when heating. should find a way to say not to do anything while this is happening
+luckily for me i have access to ultimaker's github (even the private stuff) so can look at some code examples
 
-"printing" is when printing (duh)
+if used, extruder 2 always dumps a prime blob right infront of the camera. would be good to prevent this programatically somehow. probably gcode processing which is outside the scope of this.
+if the print failed, it would be good to wipe the temp directory and restart the script. 'unexpected difference between nozzle errors' has fucked this up for me a few times.
 
-"post_print"
-
-"wait_user_action" (print aborted would you like to retry)
+made a small script (show_state.py) to print the output of the printer status and state to look for clues

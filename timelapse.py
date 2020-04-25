@@ -7,20 +7,13 @@ from urllib.request import urlopen
 from um3api import Ultimaker3
 import shutil
 
-# # check to see if ffmpeg is installed before print starts, this is quite annoying otherwise
-# print("Checking ffmpeg is installed")
-# try:
-# 	shutil.which(ffmpeg)
-# if return == "None"
-# 	print("Please install ffmpeg from 'https://ffmpeg.org/' and then run again.")
-# 	exit()
 
 # HOST = input("UM3 IP address: ")
-# DELAY = input("Set delay (s)")
-# DELAY = int(DELAY)
-DELAY = int(30)
+HOST = "192.168.10.124"
 
-# allow user to specify the format as binary choice?
+# DELAY = input("Set delay (s)")
+DELAY = int(5)
+
 # OUTFILE = input("Save file as <filename>.mp4/.mkv: ")
 OUTFILE = "test.mp4"
 
@@ -68,35 +61,22 @@ def print_error(err):
 
 def clear_temp():
 	# delete temp files
-	print(":: Cleaning up temp files in ",tmpdir)
+	print("Cleaning up temp files in ",tmpdir)
 	shutil.rmtree(tmpdir)
 
 tmpdir = mkdtemp()
 filenameformat = os.path.join(tmpdir, "%05d.jpg")
-print(":: Saving images to",tmpdir)
+print("Saving images to",tmpdir)
 
 if not os.path.exists(tmpdir):
 	os.makedirs(tmpdir)
 
-print(":: Waiting for print to start")
+print("Waiting for print to start")
 while not printing():
 	sleep(1)
 
-# printer should only print when state is 'printing'
 
-# if state == 'pre-print':
-#
-# if state == 'post-print':
-#
-# if state == 'wait_user_action':
-
-# it should do nothing
-
-
-
-
-
-print(":: Printing")
+print("Printing")
 
 count = 0
 
@@ -110,14 +90,11 @@ while printing():
 	print("Print progress: %s Image: %05i" % (progress(), count), end='\r')
 	sleep(DELAY)
 
-
-
-
-
 # add a few extra frames to the end:
 print()
-print(":: Print completed. Taking extra frames...")
+print("Print completed. Taking extra frames...")
 extra_frames = 0
+
 while extra_frames < 4:
 	sleep(DELAY)
 	count += 1
@@ -130,7 +107,7 @@ while extra_frames < 4:
 	extra_frames +=1
 	sleep(3)
 
-print(":: Encoding video")
+print("Encoding video")
 ffmpegcmd = "ffmpeg -r 30 -i " + filenameformat + " -vcodec libx264 -preset veryslow -crf 18 " + OUTFILE + " -y" # uncomment -y flag to disable automatic outfile overwrite
 print(ffmpegcmd)
 os.system(ffmpegcmd)
