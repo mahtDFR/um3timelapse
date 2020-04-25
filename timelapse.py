@@ -9,7 +9,7 @@ import shutil
 
 
 # HOST = input("UM3 IP address: ")
-HOST = "192.168.10.124"
+HOST = "" # UM3 IP goes here
 
 # DELAY = input("Set delay (s)")
 DELAY = int(5)
