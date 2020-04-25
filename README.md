@@ -5,10 +5,15 @@ A script that makes timelapse videos from the onboard camera on your Ultimaker 3
 
 ![Bulbasaur](https://thumbs.gfycat.com/EntireGlassAlaskanmalamute-size_restricted.gif)
 
-Usage
+Prerequisites
 -----
 
-This script requires Python 3.5 or later and [FFmpeg](https://ffmpeg.org/).
+- Python 3.5 or later
+- [FFmpeg](https://ffmpeg.org/)
+
+Usage
+----
+
 Run the script. It will take some inputs and then wait for your Ultimaker to begin printing.
 It will then start taking pictures.
 
